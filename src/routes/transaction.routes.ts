@@ -26,10 +26,13 @@ transactionRouter.get('/', (request, response) => {
 
 transactionRouter.post('/', (request, response) => {
   try {
-
     const { total } = transactionsRepository.getBalance();
 
     const { title, value, type } = request.body;
+
+    if (!['income', 'outcome'].includes(type)) {
+      return response.status(400).json({ error: 'Erro no tipo' })
+    }
 
     if (type === 'outcome' && value > total) {
       return response.status(400).json({ error: title })
